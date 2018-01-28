@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Reflection;
 using System.Threading;
 using clipr;
@@ -48,10 +49,19 @@ namespace SimpleServer
 
 		private static void Setup(Options options)
 		{
+			const string outputTemplate = "[{Timestamp:HH:mm:ss.ffff}] [{Level:u3}] [{Method}] {Message}{NewLine}";
+
 			var loggerConfiguration = new LoggerConfiguration()
 				.MinimumLevel.Is(options.Verbose ? LogEventLevel.Verbose : LogEventLevel.Information)
-				.WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss.ffff}] [{Level:u3}] [{Method}] {Message}{NewLine}")
+				.WriteTo.Console(outputTemplate: outputTemplate)
 				.Enrich.FromLogContext();
+
+			if (!string.IsNullOrWhiteSpace(options.LogFile))
+			{
+				loggerConfiguration
+					.WriteTo.File(options.LogFile, outputTemplate: outputTemplate);
+			}
+
 			var logger = loggerConfiguration.CreateLogger();
 			Log.Logger = logger;
 		}

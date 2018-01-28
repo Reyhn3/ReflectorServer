@@ -19,6 +19,13 @@ namespace SimpleServer
 		public bool Verbose { get; set; }
 
 		[NamedArgument(
+			'f',
+			"file",
+			Action = ParseAction.Store,
+			Description = "Write logs to file.")]
+		public string LogFile { get; set; }
+
+		[NamedArgument(
 			'p',
 			"port",
 			Action = ParseAction.Store,

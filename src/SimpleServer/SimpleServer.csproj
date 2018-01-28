@@ -56,14 +56,21 @@
     <ApplicationIcon>SimpleServer.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="clipr, Version=1.6.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\clipr.1.6.0.1\lib\net35\clipr.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions\AssemblyExtensions.cs" />
+    <Compile Include="Extensions\AutomaticHelpGeneratorExtensions.cs" />
+    <Compile Include="Options.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="reflect.ico" />

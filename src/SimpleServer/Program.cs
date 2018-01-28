@@ -1,7 +1,7 @@
 ﻿using System;
 
 
-namespace Reflector
+namespace SimpleServer
 {
 	internal class Program
 	{

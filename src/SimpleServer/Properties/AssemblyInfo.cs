@@ -4,11 +4,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Reflector")]
+[assembly: AssemblyTitle("SimpleServer")]
 [assembly: AssemblyDescription("A super simple self-hosted web server that reflects any incoming request into the response.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Reflector")]
+[assembly: AssemblyProduct("SimpleServer")]
 [assembly: AssemblyCopyright("Copyright © Reyhn3 2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

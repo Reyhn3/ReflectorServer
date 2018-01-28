@@ -3,6 +3,8 @@ using System.Reflection;
 using System.Threading;
 using clipr;
 using clipr.Usage;
+using Serilog;
+using Serilog.Events;
 
 
 namespace SimpleServer
@@ -16,6 +18,7 @@ namespace SimpleServer
 			AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
 			Console.CancelKeyPress += OnShutdown;
 
+			Setup();
 			Greet();
 			Configure(args);
 
@@ -36,9 +39,20 @@ namespace SimpleServer
 
 		private static void OnShutdown(object sender, ConsoleCancelEventArgs e)
 		{
+			Console.WriteLine();
+			Console.WriteLine();
 			Console.WriteLine("Application termination detected.");
 			e.Cancel = true;
 			_resetEvent.Set();
+		}
+
+		private static void Setup()
+		{
+			var loggerConfiguration = new LoggerConfiguration()
+				.MinimumLevel.Is(LogEventLevel.Verbose)
+				.WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss.fff}] [{Level:u3}] {Message}{NewLine}");
+			var logger = loggerConfiguration.CreateLogger();
+			Log.Logger = logger;
 		}
 
 		private static void Greet()
@@ -66,6 +80,7 @@ namespace SimpleServer
 			Console.ForegroundColor = ConsoleColor.White;
 			Console.WriteLine(current);
 			Console.ResetColor();
+			Console.WriteLine();
 
 			return options;
 		}

@@ -19,9 +19,9 @@ namespace SimpleServer
 			AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
 			Console.CancelKeyPress += OnShutdown;
 
-			Setup();
 			Greet();
 			var options = Configure(args);
+			Setup(options);
 			var host = Run(options);
 
 			_resetEvent.WaitOne();
@@ -46,10 +46,10 @@ namespace SimpleServer
 			_resetEvent.Set();
 		}
 
-		private static void Setup()
+		private static void Setup(Options options)
 		{
 			var loggerConfiguration = new LoggerConfiguration()
-				.MinimumLevel.Is(LogEventLevel.Verbose)
+				.MinimumLevel.Is(options.Verbose ? LogEventLevel.Verbose : LogEventLevel.Information)
 				.WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss.ffff}] [{Level:u3}] [{Method}] {Message}{NewLine}")
 				.Enrich.FromLogContext();
 			var logger = loggerConfiguration.CreateLogger();

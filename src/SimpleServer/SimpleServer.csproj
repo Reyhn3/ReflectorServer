@@ -102,6 +102,7 @@
     <Compile Include="Server\Host.cs" />
     <Compile Include="Server\Reflection.cs" />
     <Compile Include="Server\Reflector.cs" />
+    <Compile Include="Server\RequestContractResolver.cs" />
     <Compile Include="Server\Server.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -1,19 +1,25 @@
 ﻿using System;
+using Microsoft.Owin;
 
 
 namespace SimpleServer.Server
 {
 	internal class Reflection
 	{
-		public Reflection(string method, string body)
+		private Reflection(IOwinRequest request, string body)
 		{
-			DateTimeUtc = DateTime.UtcNow;
-			Method = method;
+			ReceivedUtc = DateTime.UtcNow;
 			Body = body;
+			Request = request;
 		}
 
-		public DateTime DateTimeUtc { get; }
-		public string Method { get; }
+		public DateTime ReceivedUtc { get; }
 		public string Body { get; }
+		public IOwinRequest Request { get; }
+
+		public static Reflection FromRequest(IOwinRequest request, string body)
+		{
+			return new Reflection(request, body);
+		}
 	}
 }

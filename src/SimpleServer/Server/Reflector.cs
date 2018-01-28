@@ -10,13 +10,14 @@ namespace SimpleServer.Server
 	{
 		private readonly JsonSerializerSettings _serializerSettings = new JsonSerializerSettings
 			{
-				NullValueHandling = NullValueHandling.Include
+				NullValueHandling = NullValueHandling.Include,
+				ContractResolver = new RequestContractResolver()
 			};
 
 		public async Task<string> Generate(IOwinRequest request)
 		{
 			var body = await ReadBodyAsString(request.Body);
-			var reflection = new Reflection(request.Method, body);
+			var reflection = Reflection.FromRequest(request, body);
 			var response = JsonConvert.SerializeObject(reflection, Formatting.Indented, _serializerSettings);
 			return response;
 		}

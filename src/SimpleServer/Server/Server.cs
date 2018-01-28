@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Threading.Tasks;
 using Microsoft.Owin;
+using Newtonsoft.Json;
 using Owin;
 using Serilog;
 
@@ -9,6 +10,11 @@ namespace SimpleServer.Server
 {
 	internal class Server
 	{
+		private readonly JsonSerializerSettings _serializerSettings = new JsonSerializerSettings
+			{
+				NullValueHandling = NullValueHandling.Include
+			};
+
 		private readonly ILogger _logger;
 		private readonly Reflector _reflector;
 
@@ -21,11 +27,14 @@ namespace SimpleServer.Server
 
 		private async Task ReflectRequest(IOwinContext context)
 		{
-			_logger.Information("Request received! {Url} {Method}", context.Request.Uri, context.Request.Method);
+			_logger.Debug("Request received on {Url} as {Method}", context.Request.Uri, context.Request.Method);
 
-			var response = _reflector.Generate(context.Request);
+			var reflection = await _reflector.Generate(context.Request);
+			var response = JsonConvert.SerializeObject(reflection, Formatting.Indented, _serializerSettings);
+			await context.Response.WriteAsync(response);
 			context.Response.StatusCode = (int)HttpStatusCode.OK;
-			await context.Response.WriteAsync(await response);
+
+			_logger.Information("{Method} {@sRequest}", context.Request.Method, reflection);
 		}
 	}
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using System.Threading;
 using clipr;
 using clipr.Usage;
 
@@ -8,28 +9,36 @@ namespace SimpleServer
 {
 	internal class Program
 	{
+		private static readonly ManualResetEvent _resetEvent = new ManualResetEvent(false);
+
 		private static void Main(string[] args)
 		{
-			AppDomain.CurrentDomain.UnhandledException += CurrentDomainOnUnhandledException;
+			AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
+			Console.CancelKeyPress += OnShutdown;
 
 			Greet();
 			Configure(args);
 
-
-			Console.WriteLine();
-			Console.WriteLine("Reflector Server started. Waiting for requests.");
-			Console.ReadLine();
+			_resetEvent.WaitOne();
+			Exit();
 		}
 
-		private static void CurrentDomainOnUnhandledException(object sender, UnhandledExceptionEventArgs unhandledExceptionEventArgs)
+		private static void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)
 		{
 			Console.ForegroundColor = ConsoleColor.Red;
 			Console.WriteLine("A fatal error occurred!");
 			Console.ForegroundColor = ConsoleColor.DarkRed;
-			Console.WriteLine(unhandledExceptionEventArgs?.ExceptionObject?.ToString());
+			Console.WriteLine(e?.ExceptionObject?.ToString());
 			Console.ResetColor();
 			Console.WriteLine("The application will now exit.");
 			Environment.Exit(1);
+		}
+
+		private static void OnShutdown(object sender, ConsoleCancelEventArgs e)
+		{
+			Console.WriteLine("Application termination detected.");
+			e.Cancel = true;
+			_resetEvent.Set();
 		}
 
 		private static void Greet()
@@ -59,6 +68,13 @@ namespace SimpleServer
 			Console.ResetColor();
 
 			return options;
+		}
+
+		private static void Exit()
+		{
+			Console.ForegroundColor = ConsoleColor.Cyan;
+			Console.WriteLine("Shutting down.");
+			Console.ResetColor();
 		}
 	}
 }

@@ -5,6 +5,7 @@ using clipr;
 using clipr.Usage;
 using Serilog;
 using Serilog.Events;
+using SimpleServer.Server;
 
 
 namespace SimpleServer
@@ -20,10 +21,11 @@ namespace SimpleServer
 
 			Setup();
 			Greet();
-			Configure(args);
+			var options = Configure(args);
+			var host = Run(options);
 
 			_resetEvent.WaitOne();
-			Exit();
+			Exit(host);
 		}
 
 		private static void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)
@@ -39,8 +41,6 @@ namespace SimpleServer
 
 		private static void OnShutdown(object sender, ConsoleCancelEventArgs e)
 		{
-			Console.WriteLine();
-			Console.WriteLine();
 			Console.WriteLine("Application termination detected.");
 			e.Cancel = true;
 			_resetEvent.Set();
@@ -50,7 +50,8 @@ namespace SimpleServer
 		{
 			var loggerConfiguration = new LoggerConfiguration()
 				.MinimumLevel.Is(LogEventLevel.Verbose)
-				.WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss.fff}] [{Level:u3}] {Message}{NewLine}");
+				.WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss.ffff}] [{Level:u3}] [{Method}] {Message}{NewLine}")
+				.Enrich.FromLogContext();
 			var logger = loggerConfiguration.CreateLogger();
 			Log.Logger = logger;
 		}
@@ -85,8 +86,20 @@ namespace SimpleServer
 			return options;
 		}
 
-		private static void Exit()
+		private static Host Run(Options options)
 		{
+			var address = $"http://localhost:{options.Port}/";
+			var host = new Host(Log.Logger, address);
+			host.Start();
+			return host;
+		}
+
+		private static void Exit(IDisposable host)
+		{
+			host.Dispose();
+
+			Console.WriteLine();
+			Console.WriteLine();
 			Console.ForegroundColor = ConsoleColor.Cyan;
 			Console.WriteLine("Shutting down.");
 			Console.ResetColor();

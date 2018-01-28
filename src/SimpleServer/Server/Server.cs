@@ -1,36 +1,35 @@
 ﻿using System;
 using System.IO;
 using System.Net;
-using System.Net.Http.Formatting;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web.Http;
 using Microsoft.Owin;
 using Owin;
+using Serilog;
 
 
 namespace SimpleServer.Server
 {
 	public class Server
 	{
-		public void Configuration(IAppBuilder appBuilder)
+		private readonly ILogger _logger;
+
+		public Server(ILogger logger, IAppBuilder appBuilder)
 		{
-			var config = new HttpConfiguration();
-
-			//config.Formatters.Clear();
-			//config.Formatters.Add(new JsonMediaTypeFormatter());
-
+			_logger = logger.ForContext<Server>();
 			appBuilder.Run(ReflectRequest);
 		}
 
 		private async Task ReflectRequest(IOwinContext context)
 		{
+			_logger.Information("Request received! {Url}", context.Request.Uri);
+
 			var response = GenerateResponse(context.Request);
 			context.Response.StatusCode = (int)HttpStatusCode.OK;
 			await context.Response.WriteAsync(await response);
 		}
 
-		private async Task<string> GenerateResponse(IOwinRequest request)
+		private static async Task<string> GenerateResponse(IOwinRequest request)
 		{
 			var sb = new StringBuilder();
 

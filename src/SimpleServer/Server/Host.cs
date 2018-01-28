@@ -5,7 +5,7 @@ using Serilog;
 
 namespace SimpleServer.Server
 {
-	public class Host : IDisposable
+	internal class Host : IDisposable
 	{
 		private readonly ILogger _logger;
 		private readonly string _address;
@@ -21,7 +21,7 @@ namespace SimpleServer.Server
 		public void Start()
 		{
 			_logger.Debug("Starting server on {Address}.", _address);
-			_server = WebApp.Start(_address, appBuilder => new Server(_logger, appBuilder));
+			_server = WebApp.Start(_address, appBuilder => new Server(_logger, appBuilder, new Reflector()));
 		}
 
 		public void Stop()

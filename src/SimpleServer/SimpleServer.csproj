@@ -100,6 +100,8 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Server\Host.cs" />
+    <Compile Include="Server\Reflection.cs" />
+    <Compile Include="Server\Reflector.cs" />
     <Compile Include="Server\Server.cs" />
   </ItemGroup>
   <ItemGroup>

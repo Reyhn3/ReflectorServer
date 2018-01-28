@@ -50,7 +50,7 @@ namespace SimpleServer
 		{
 			var loggerConfiguration = new LoggerConfiguration()
 				.MinimumLevel.Is(LogEventLevel.Verbose)
-				.WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss.ffff}] [{Level:u3}] {Message}{NewLine}")
+				.WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss.ffff}] [{Level:u3}] [{Method}] {Message}{NewLine}")
 				.Enrich.FromLogContext();
 			var logger = loggerConfiguration.CreateLogger();
 			Log.Logger = logger;

@@ -10,6 +10,8 @@ namespace SimpleServer
 	{
 		private static void Main(string[] args)
 		{
+			AppDomain.CurrentDomain.UnhandledException += CurrentDomainOnUnhandledException;
+
 			Greet();
 			Configure(args);
 
@@ -17,6 +19,17 @@ namespace SimpleServer
 			Console.WriteLine();
 			Console.WriteLine("Reflector Server started. Waiting for requests.");
 			Console.ReadLine();
+		}
+
+		private static void CurrentDomainOnUnhandledException(object sender, UnhandledExceptionEventArgs unhandledExceptionEventArgs)
+		{
+			Console.ForegroundColor = ConsoleColor.Red;
+			Console.WriteLine("A fatal error occurred!");
+			Console.ForegroundColor = ConsoleColor.DarkRed;
+			Console.WriteLine(unhandledExceptionEventArgs?.ExceptionObject?.ToString());
+			Console.ResetColor();
+			Console.WriteLine("The application will now exit.");
+			Environment.Exit(1);
 		}
 
 		private static void Greet()

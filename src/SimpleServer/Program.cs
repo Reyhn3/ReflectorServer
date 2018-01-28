@@ -12,6 +12,7 @@ namespace SimpleServer
 	internal class Program
 	{
 		private static readonly ManualResetEvent _resetEvent = new ManualResetEvent(false);
+		private static Host _host;
 
 		private static void Main(string[] args)
 		{
@@ -20,7 +21,8 @@ namespace SimpleServer
 
 			Setup();
 			Greet();
-			Configure(args);
+			var options = Configure(args);
+			_host = Start(options);
 
 			_resetEvent.WaitOne();
 			Exit();
@@ -84,6 +86,14 @@ namespace SimpleServer
 
 			return options;
 		}
+		
+		private static Host Start(Options options)
+		{
+			var address = $"http://localhost:{options.Port}/";
+			var host = new Host(address);
+			host.Start();
+			return host;
+		}
 
 		private static void Exit()
 		{
@@ -91,5 +101,7 @@ namespace SimpleServer
 			Console.WriteLine("Shutting down.");
 			Console.ResetColor();
 		}
+
+
 	}
 }
